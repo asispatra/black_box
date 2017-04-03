@@ -96,9 +96,9 @@ void create_server(char* PORT, void (*fun_ptr)(int clientfd)) {
         exit(1);
     }
 
-    printf("server: waiting for connections...\n");
 
     while(1) {  // main accept() loop
+        printf("server: waiting for connections...\n");
         sin_size = sizeof their_addr;
         new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
         if (new_fd == -1) {
@@ -170,9 +170,9 @@ void tx(int fd, char* msg) {
         perror("send");
 }
 
-int rx(int fd, char *buf) { // Returns number of bytes read
+int rx(int fd, char *buf, int length) { // Returns number of bytes read
     int numbytes = 0;
-    if ((numbytes = recv(fd, buf, strlen(buf)-1, 0)) == -1) {
+    if ((numbytes = recv(fd, buf, length-1, 0)) == -1) {
         perror("recv");
         exit(1);
     }
