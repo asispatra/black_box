@@ -33,7 +33,7 @@ void *get_in_addr(struct sockaddr *sa)
     return &(((struct sockaddr_in6*)sa)->sin6_addr);
 }
 
-void create_server(char* PORT, void (*fun_ptr)(int clientfd)) {
+void create_server(const char* PORT, rxtx_fn_t fun_ptr, void *future) {
     int sockfd, new_fd;  // listen on sock_fd, new connection on new_fd
     struct addrinfo hints, *servinfo, *p;
     struct sockaddr_storage their_addr; // connector's address information
@@ -113,7 +113,7 @@ void create_server(char* PORT, void (*fun_ptr)(int clientfd)) {
 
         if (!fork()) { // this is the child process
             close(sockfd); // child doesn't need the listener
-            (*fun_ptr)(new_fd);
+            (*fun_ptr)(new_fd, future);
             close(new_fd);
             exit(0);
         }
@@ -121,7 +121,7 @@ void create_server(char* PORT, void (*fun_ptr)(int clientfd)) {
     }
 }
 
-void create_client(char* hostname, char* CLIENTPORT, void (*fun_ptr)(int clientfd)) {
+void create_client(const char* hostname, const char* CLIENTPORT, rxtx_fn_t fun_ptr, void *future) {
     int sockfd;
     struct addrinfo hints, *servinfo, *p;
     int rv;
@@ -161,11 +161,11 @@ void create_client(char* hostname, char* CLIENTPORT, void (*fun_ptr)(int clientf
             s, sizeof s);
     printf("client: connecting to %s\n", s);
     freeaddrinfo(servinfo); // all done with this structure
-    (*fun_ptr)(sockfd);
+    (*fun_ptr)(sockfd, future);
     close(sockfd);
 }
 
-void tx(int fd, char* msg) {
+void tx(int fd, const char* msg) {
     if (send(fd, msg, strlen(msg), 0) == -1)
         perror("send");
 }

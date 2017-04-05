@@ -1,2 +1,11 @@
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-void create_thread(void *(*fun_ptr)(void *dummy));
+typedef void *(*thread_fn_t)(void *dummy);
+
+void create_thread(thread_fn_t fun_ptr, void *future);
+
+#ifdef __cplusplus
+}
+#endif

@@ -1,7 +1,7 @@
 TARGETS=network thread
 
-CC=gcc
-CFLAGS=-Wall -Wextra
+CC=g++
+CFLAGS=-Wall -Wextra -Wno-unused-parameter
 
 INCLUDE=include
 SRC=src
@@ -13,7 +13,7 @@ OBJS = $(patsubst %,$(OBJ)/%,$(TARGETS))
 .PHONY: all clean
 
 all: $(OBJS)
-	$(CC) main.c -o main $^ -I $(INCLUDE) $(LIBS)
+	$(CC) main.cpp -o main $^ -I $(INCLUDE) $(LIBS)
 
 $(OBJ)/%: $(SRC)/%.c
 	$(CC) $(CFLAGS) -c -o $@ $< -I $(INCLUDE)
